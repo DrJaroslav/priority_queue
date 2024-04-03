@@ -7,6 +7,8 @@ typedef struct pQueue PQueue;
 
 PQueue* create();                           //sukurti tuščią prioritetinę eilę 
 
+int     isFull();                           //nustatyti, ar eilė pilna: 1 = true, 0 = false
+
 int     isEmpty(PQueue* ptr);               //nustatyti, ar eilė tuščia: 1 = true, 0 = false
 
 void    insert(PQueue* ptr, int d, int p);  //įdėti naują elementą

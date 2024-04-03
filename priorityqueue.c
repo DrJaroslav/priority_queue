@@ -13,7 +13,7 @@ typedef struct pQueue {
 } PQueue;
 
 PQueue* create(){                                       //grąžina rodyklę į atminties vietą, 
-    PQueue*  ptr  = (PQueue*)malloc(sizeof(PQueue));    //kur lauke next bus saugoma rodyklė į elementą
+    PQueue* ptr = (PQueue*)malloc(sizeof(PQueue));      //kur lauke next bus saugoma rodyklė į elementą
     ptr -> next = NULL;                                 //su didžiasiu prioritetu
 
     return ptr;
@@ -26,41 +26,56 @@ Node* createNode(){
     return ptr;
 }
 
+int isFull(){
+    Node* testNodePtr = (Node*)malloc(sizeof(Node));
+    int full = (testNodePtr == NULL);
+    
+    if(full == 0){
+        free(testNodePtr);
+    }
+
+    return full;
+}
+
 int isEmpty(PQueue* ptr){           //patikrina, ar yra rodyklė į elementą su didžiasiu prioritetu:
     return (ptr -> next) == NULL;   //nėra rodyklės => nėra elemento => tuščia eilė
 }
 
 void insert(PQueue* ptr, int d, int p){
-    Node* newNode = createNode();
-    newNode -> data     = d;
-    newNode -> priority = p;
-
-    if(isEmpty(ptr) == 1){
-        ptr -> next = newNode;
+    if(isFull() == 1){
+        fprintf(stderr, "The queue is full. The element can not be inserted.");
     } else {
-        Node* current_ptr = ptr -> next;
-        Node* temp;
-        int inserted = 0;
+        Node* newNode = createNode();
+        newNode -> data     = d;
+        newNode -> priority = p;
 
-        while(inserted == 0){
-            if((current_ptr -> priority) <= (newNode -> priority)){
-                if((current_ptr -> next)!= NULL){
-                    if((current_ptr -> next -> priority) <= (newNode -> priority)){
-                        temp = current_ptr -> next;
-                        current_ptr = temp;
+        if(isEmpty(ptr) == 1){
+            ptr -> next = newNode;
+        } else {
+            Node* current_ptr = ptr -> next;
+            Node* temp;
+            int inserted = 0;
+
+            while(inserted == 0){
+                if((current_ptr -> priority) <= (newNode -> priority)){
+                    if((current_ptr -> next)!= NULL){
+                        if((current_ptr -> next -> priority) <= (newNode -> priority)){
+                            temp = current_ptr -> next;
+                            current_ptr = temp;
+                        } else {
+                           newNode -> next = current_ptr -> next;
+                           current_ptr -> next = newNode;
+                           inserted = 1;
+                        }
                     } else {
-                       newNode -> next = current_ptr -> next;
-                       current_ptr -> next = newNode;
-                       inserted = 1;
+                        current_ptr -> next = newNode;
+                        inserted = 1;
                     }
                 } else {
-                    current_ptr -> next = newNode;
+                    newNode -> next = ptr -> next;
+                    ptr -> next = newNode;
                     inserted = 1;
                 }
-            } else {
-                newNode -> next = ptr -> next;
-                ptr -> next = newNode;
-                inserted = 1;
             }
         }
     }
@@ -68,7 +83,7 @@ void insert(PQueue* ptr, int d, int p){
 
 void pop(PQueue* ptr){
     if(isEmpty(ptr) == 1){
-        printf("The queue is empty. There is nothing to remove.");
+        fprintf(stderr, "The queue is empty. There is nothing to remove.");
     } else {
         Node* head  = ptr -> next;
         ptr -> next = head -> next;
@@ -87,7 +102,7 @@ PQueue* join(PQueue* ptr1, PQueue* ptr2){   //patikrina, kad pateiktos eilės ne
     Node* temp;
 
     if(isEmpty(ptr1) == 1 && isEmpty(ptr2) == 1){
-        printf("The queues are empty. There is nothing to join.");
+        fprintf(stderr,"The queues are empty. There is nothing to join.");
     } else {
         while(current1 != NULL){
             insert(ptr, current1 -> data, current1 -> priority);
