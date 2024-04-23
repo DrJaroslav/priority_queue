@@ -19,4 +19,4 @@ int     peek(PQueue* ptr);                  //grąžinti elemento su aukščiaus
 
 PQueue* join(PQueue* ptr1, PQueue* ptr2);   //sujungti dvi prioritetines eiles į vieną
 
-#endif //PRIORITYQUEUE_H
+#endif
